@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabalho Escolar - Klabin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+      body {
+    margin: 0; /* Remove margens automáticas */
+    padding: 0; /* Remove espaçamentos automáticos */
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+header {
+    width: 100%; /* Garante que o header ocupe 100% da largura da página */
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0; /* Adiciona espaçamento interno para deixar o conteúdo mais bonito */
+    position: relative; /* Faz o header colar ao topo da página */
+    top: 0;
+}
+
+        #word-search {
+            display: grid;
+            grid-template-columns: repeat(10, 30px);
+            gap: 2px;
+            margin: 20px auto;
+            justify-content: center;
+        }
+     #new-game{
+padding: 9px;
+background-color: rgba(0, 0, 255, 0.658);
+border-radius: 10px;
+width: 180px;
+font-weight: bold;
+color: white;
+cursor: pointer;
+     }
+     #new-game:hover{
+        background-color: blue;
+        color: yellow;
+     }
+
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .selected {
+            background-color: lightgreen;
+        }
+
+        .found {
+            background-color: lightblue;
+            pointer-events: none;
+        }
+        .logo {
+            margin-bottom: -28px;
+           
+            height: auto;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        #found-words {
+            margin-top: 10px;
+        }
+
+        .strikethrough {
+            text-decoration: line-through;
+        }
+
+        a{
+            text-decoration: none;
+            text-align: center;
+            margin: auto;
+width: 80px;
+background-color: brown;
+padding: 9px;
+border-radius: 10px;
+color: white;
+display: block;        
+}
+
+      
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+       
+        }
+        h1{
+            font-size: 1.5rem;
+        }  
+</style>
+</head>
+<body>
+    <!-- Cabeçalho com menu -->
+    <header>
+        <div class="container header-container">
+            <div class="logo" onclick="showMainPage()">
+                <div class="logo-img">K</div>
+                <h1>Trabalho Klabin</h1>
+            </div>
+            
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            
+            <nav>
+                <ul id="menu">
+                   
+                    <li><a href="../index.html">VOLTAR</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+<header>
+    
+    <h1>Caça Palavras KLABIN</h1>
+</header>
+
+<body>
+    <br>
+    <a href="../index.html">voltar</a>
+
+    <p>Encontre as palavras relacionadas a Klabin Papel e Celulose!</p>
+
+    <div id="word-search"></div>
+
+    <div id="message"></div>
+
+    <div id="found-words"></div>
+
+    <button id="new-game">Novo Jogo</button>
+    <br><br>
+ 
+    <br>
+  
+
+    <script>
+    const allWords = [
+  "PAPEL",
+  "CELULOSE",
+  "KLABIN",
+  "FIBRA",
+  "FOLHA",
+  "IMPRESSO",
+  "BRANQUEAR",
+  "RECICLAR",
+  "SUSTENTO",
+  "CAIXA",
+  "OBJETIVO",
+  "ROLO",
+  "EUCALIPTO",
+  "CORTE",
+  "PULPA",
+  "MAQUINA",
+  "IMPRESSO",
+  "BIRITIBA",
+  "PACOTE",
+  "OFICIO",
+  "CADERNO",
+  "ESTAMPAR",
+  "PASTA",
+  "ARVORE",
+  "FARDOS",
+  "JORNAL",
+  "ENVELOPE",
+  "SERRADO",
+  "PRODUCAO",
+  "FOLHAGEM"
+];
+
+
+        let words = [];
+        const grid = Array.from({ length: 10 }, () => Array(10).fill(''));
+        const selectedLetters = [];
+        const foundWords = new Set();
+        let startTime = Date.now();
+
+        function startGame() {
+            words = getRandomWords();
+            resetGame();
+            words.forEach(word => placeWord(word));
+            fillGrid();
+            drawGrid();
+            updateMessage();
+        }
+
+        function getRandomWords() {
+            const shuffled = allWords.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, 5);
+        }
+
+        function resetGame() {
+            // Limpar o grid e o estado do jogo
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    grid[i][j] = '';
+                }
+            }
+
+            selectedLetters.length = 0;
+            foundWords.clear();
+            document.getElementById('message').textContent = '';
+            document.getElementById('found-words').textContent = '';
+            startTime = Date.now();
+        }
+
+        function placeWord(word) {
+            const dir = Math.random() < 0.5 ? 'H' : 'V';
+            let placed = false;
+
+            while (!placed) {
+                const row = Math.floor(Math.random() * (dir === 'H' ? 10 : 10 - word.length));
+                const col = Math.floor(Math.random() * (dir === 'H' ? 10 - word.length : 10));
+
+                if (canPlaceWord(word, row, col, dir)) {
+                    for (let i = 0; i < word.length; i++) {
+                        grid[row + (dir === 'V' ? i : 0)][col + (dir === 'H' ? i : 0)] = word[i];
+                    }
+                    placed = true;
+                }
+            }
+        }
+
+        function canPlaceWord(word, row, col, dir) {
+            for (let i = 0; i < word.length; i++) {
+                if (grid[row + (dir === 'V' ? i : 0)][col + (dir === 'H' ? i : 0)] !== '') {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function fillGrid() {
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    if (grid[i][j] === '') {
+                        grid[i][j] = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                    }
+                }
+            }
+        }
+
+        function drawGrid() {
+            const wordSearch = document.getElementById('word-search');
+            wordSearch.innerHTML = '';
+            grid.forEach((row, rowIndex) => {
+                row.forEach((letter, colIndex) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.textContent = letter;
+                    cell.dataset.row = rowIndex;
+                    cell.dataset.col = colIndex;
+                    cell.addEventListener('click', () => selectLetter(cell, letter));
+                    wordSearch.appendChild(cell);
+                });
+            });
+        }
+
+        function selectLetter(cell, letter) {
+            if (cell.classList.contains('found')) return;
+
+            const row = parseInt(cell.dataset.row);
+            const col = parseInt(cell.dataset.col);
+
+            // Verificar se a célula já está selecionada
+            const selectedIndex = selectedLetters.findIndex(sel => sel.row === row && sel.col === col);
+
+            if (selectedIndex > -1) {
+                // Se já estiver selecionada, removê-la
+                cell.classList.remove('selected');
+                selectedLetters.splice(selectedIndex, 1); // Remove da lista de letras selecionadas
+            } else {
+                // Caso contrário, selecionar a célula
+                cell.classList.add('selected');
+                selectedLetters.push({ letter, row, col });
+            }
+
+            checkWords();
+        }
+
+        function checkWords() {
+            words.forEach(word => {
+                const positions = getPositionsForWord(word);
+                if (positions.length === word.length && positions.every(pos => selectedLetters.some(sel => sel.row === pos.row && sel.col === pos.col))) {
+                    positions.forEach(pos => {
+                        const cell = document.querySelector(`.cell[data-row="${pos.row}"][data-col="${pos.col}"]`);
+                        cell.classList.add('found');
+                    });
+                    foundWords.add(word);
+                    updateMessage();
+                    selectedLetters.length = 0; // Reset selected letters
+
+                    if (foundWords.size === words.length) {
+                        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                        document.getElementById('message').textContent += " Parabéns! Você encontrou todas as palavras em " + elapsedTime + " segundos.";
+                    }
+                }
+            });
+        }
+
+        function getPositionsForWord(word) {
+            for (let row = 0; row < 10; row++) {
+                for (let col = 0; col < 10; col++) {
+                    const positionsH = checkPosition(row, col, word, 'H');
+                    const positionsV = checkPosition(row, col, word, 'V');
+                    if (positionsH.length > 0) return positionsH;
+                    if (positionsV.length > 0) return positionsV;
+                }
+            }
+            return [];
+        }
+
+        function checkPosition(row, col, word, dir) {
+            const positions = [];
+            for (let i = 0; i < word.length; i++) {
+                const r = row + (dir === 'V' ? i : 0);
+                const c = col + (dir === 'H' ? i : 0);
+                if (r < 10 && c < 10 && grid[r][c] === word[i]) {
+                    positions.push({ row: r, col: c });
+                } else {
+                    return [];
+                }
+            }
+            return positions;
+        }
+
+        function updateMessage() {
+            const message = "Encontre as palavras: " + words.map(word => 
+                foundWords.has(word) ? `<span class="strikethrough">${word}</span>` : word
+            ).join(", ");
+            document.getElementById('message').innerHTML = message;
+        }
+
+        document.getElementById('new-game').addEventListener('click', startGame);
+
+        startGame(); // Começar o jogo pela primeira vez
+    </script>
+</body>
+</html>
