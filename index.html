@@ -1020,11 +1020,28 @@
         }
         
         /* Memory Game */
-        .memory-game-section {
-            background-color: var(--branco);
-            padding: 80px 0;
-            position: relative;
-        }
+.memory-game {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 10px;
+}
+.memory-card {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, var(--verde-claro), var(--verde-medio));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+  font-size: 1.8rem; /* Reduzido de 2rem */
+  color: var(--branco);
+  min-height: 60px; /* Altura mínima para telas pequenas */
+}
         
         .memory-game {
             display: grid;
@@ -1034,11 +1051,29 @@
             margin: 0 auto;
         }
         
-        @media (max-width: 500px) {
-            .memory-game {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
+@media (max-width: 500px) {
+  .memory-game {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  
+  .memory-game-section {
+    padding: 40px 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .memory-game {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  
+  .memory-card {
+    font-size: 1.2rem;
+  }
+}
         
         .memory-card {
             aspect-ratio: 1;
@@ -1070,11 +1105,18 @@
             border-radius: 10px;
         }
         
-        .memory-card .front-face {
-            background: var(--branco);
-            color: var(--verde-medio);
-            transform: rotateY(180deg);
-        }
+.memory-card .front-face {
+  background: var(--branco);
+  color: var(--verde-medio);
+  transform: rotateY(180deg);
+  font-size: 0.8rem; /* Reduz o tamanho da fonte */
+  padding: 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
         
         .memory-card .back-face {
             background: linear-gradient(135deg, var(--verde-claro), var(--verde-medio));
@@ -1720,16 +1762,16 @@
             </p>
             
             <div class="avatar-gallery">
-                <div class="avatar-item" onclick="showAvatar('Laura', 'girl')">
-                    <img src="img/laura.jpg" alt="Laura" class="avatar-img">
-                    <div class="avatar-name">Laura Batista</div>
-                </div>
-                
                 <div class="avatar-item" onclick="showAvatar('Murilo', 'boy')">
                     <img src="img/mu.jpg" alt="Murilo" class="avatar-img">
                     <div class="avatar-name">Murilo Raul</div>
                 </div>
-                
+
+                <div class="avatar-item" onclick="showAvatar('Laura', 'girl')">
+                    <img src="img/girl2.jpg" alt="Laura" class="avatar-img">
+                    <div class="avatar-name">Laura Batista</div>
+                </div>                
+                                
                 <div class="avatar-item" onclick="showAvatar('Rafaela', 'girl')">
                     <img src="img/girl.jpg" alt="Rafaela" class="avatar-img">
                     <div class="avatar-name">Rafaela Zocarato</div>
@@ -1746,12 +1788,12 @@
                 </div>
                 
                 <div class="avatar-item" onclick="showAvatar('Isabely', 'girl')">
-                    <img src="img/isa.jpg" alt="Isabely" class="avatar-img">
+                    <img src="img/girl2.jpg" alt="Isabely" class="avatar-img">
                     <div class="avatar-name">Isabely</div>
                 </div>
 
                 <div class="avatar-item" onclick="showAvatar('Melissa', 'girl')">
-                    <img src="img/mel.png" alt="Melissa" class="avatar-img">
+                    <img src="img/girl2.jpg" alt="Melissa" class="avatar-img">
                     <div class="avatar-name">Melissa</div>
                 </div>
                 
@@ -1760,6 +1802,7 @@
                     <div class="avatar-name">Pedro Lucas</div>
                 </div>
             </div>
+       
             
             <div class="avatar-display">
                 <div id="avatar-character" class="avatar-character">
@@ -1839,7 +1882,7 @@
             },
             Murilo: {
                 name: 'Murilo Raul', 
-                message: 'Oi! Sou o Murilo e gosto muito de Tecnologia e Animes! 📚',
+                message: 'Oi! Sou o Murilo e gosto muito de Tecnologia e desenvolvi esse site.! 📚',
                 hair: 'hair-blonde',
                 shirt: 'shirt-blue'
             },
